@@ -50,6 +50,7 @@ def parse_lamedb(lines, host):
 
     channel = []
     alias = []
+    sid = []
     url = []
     i = 0
     f = 0
@@ -76,6 +77,7 @@ def parse_lamedb(lines, host):
                     ]
 
                 url.append(''.join(url_string))
+                sid.append(service_id)
                 channel.append(
                     (lines[i+1].decode('utf-8')).strip().replace('.', ''))
                 alias.append(
@@ -84,10 +86,10 @@ def parse_lamedb(lines, host):
                 f += 1
         i += 1
 
-    return channel, alias, url
+    return channel, alias, sid, url
 
 
-def add_db_entries(channel, alias, url):
+def add_db_entries(channel, alias, sid, url):
 
     with closing(MySQLdb.connect(
             login.DB_HOST, login.DB_USER,
@@ -99,8 +101,11 @@ def add_db_entries(channel, alias, url):
 
             i = 0
             while i < len(channel):
-                cursor.execute('INSERT INTO lamedb (channel, alias, url) \
-                VALUES (%s,%s,%s)', ((channel[i]), (alias[i]), (url[i])))
+                cursor.execute(
+                    'INSERT INTO lamedb (channel, alias, sid, url) \
+                    VALUES (%s,%s,%s,%s)',
+                    ((channel[i]), (alias[i]), (sid[i]), (url[i]))
+                    )
                 i += 1
             connection.commit()
 
@@ -118,9 +123,9 @@ def main():
     with open(LAMEDB_LOCAL, 'r') as f:
         lines = f.readlines()
 
-    channel, alias, url = parse_lamedb(lines, host)
+    channel, alias, sid, url = parse_lamedb(lines, host)
 
-    add_db_entries(channel, alias, url)
+    add_db_entries(channel, alias, sid, url)
 
 
 if __name__ == '__main__':
