@@ -77,7 +77,7 @@ def parse_lamedb(lines, host):
 
                 url.append(''.join(url_string))
                 channel.append(
-                    (lines[i+1].decode('utf-8')).strip())
+                    (lines[i+1].decode('utf-8')).strip().replace('.', ''))
                 alias.append(
                     re.compile('[^a-zA-Z0-9]').sub('', channel[f].lower()))
 
