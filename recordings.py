@@ -2,6 +2,8 @@
 # -*- coding: utf8 -*-
 
 import os
+import socket
+import sys
 import re
 from glob import glob
 import MySQLdb
@@ -15,6 +17,7 @@ from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, TIT2, TPE1, TALB, USLT, TYER, APIC
 
 import login
+import podcast
 
 
 DIR_FROM = '/home/pi/dreamberry/recordings/finished/'
@@ -22,7 +25,10 @@ DIR_TO = '/var/www/dreamberry/recordings/'
 STAMP = 'processing_'
 DATE_TIME_FORMAT = '%Y-%m-%d_%H-%M'
 ID3_TIME_FORMAT = '%d.%m.%Y, %H:%M'
+PODCAST_PATH = '/var/www/dreamberry/podcast/'
 PODCAST_IMG_PATH = '/var/www/dreamberry/img/podcast/'
+HOST_NAME = 'http://' + socket.gethostname()
+
 
 
 def stamp(f):
@@ -32,7 +38,7 @@ def stamp(f):
     return DIR_FROM + STAMP + os.path.basename(f)
 
 
-def get_metadata(f):
+def metadata(f):
 
     with open(f, 'r') as meta:
         lines = meta.readlines()
@@ -42,7 +48,7 @@ def get_metadata(f):
     return sid, timestamp
 
 
-def get_epg_data(sid, timestamp):
+def epgdata(sid, timestamp):
 
     with closing(MySQLdb.connect(
             login.DB_HOST, login.DB_USER,
@@ -129,7 +135,7 @@ def id3tag(audio_file, timestamp, channel, epg):
     audio.save(v2_version=3)
 
 
-def audio_length(out_file):
+def audiolength(out_file):
 
     length = str(
         datetime.timedelta(seconds=int((MP3(out_file)).info.length))
@@ -139,7 +145,7 @@ def audio_length(out_file):
     return length, length_bytes
 
 
-def write_to_db(timestamp, channel, epg, out_file):
+def database(timestamp, channel, epg, out_file):
 
     rec_date = datetime.datetime.fromtimestamp(
         int(timestamp)).strftime('%Y.%m.%d')
@@ -152,7 +158,7 @@ def write_to_db(timestamp, channel, epg, out_file):
     else:
         description = epg[2] + '\n\n' + epg[3]
     audiofile = os.path.basename(out_file)
-    length, length_bytes = audio_length(out_file)
+    length, length_bytes = audiolength(out_file)
 
     with closing(MySQLdb.connect(
             login.DB_HOST, login.DB_USER,
@@ -178,8 +184,8 @@ def main():
             if extension == 'ts':
 
                 metafile = DIR_FROM + os.path.basename(f) + '.meta'
-                sid, timestamp = get_metadata(metafile)
-                epg, channel = get_epg_data(sid.lower(), timestamp)
+                sid, timestamp = metadata(metafile)
+                epg, channel = epgdata(sid.lower(), timestamp)
 
                 corresponding_files = []
                 for c in glob(f.rstrip(extension) + '*'):
@@ -195,10 +201,11 @@ def main():
 
                 out_file = transcode(audio_file, timestamp, epg)
                 id3tag(out_file, timestamp, channel, epg)
-                write_to_db(timestamp, channel, epg, out_file)
+                database(timestamp, channel, epg, out_file)
 
                 for c in corresponding_files:
                     os.remove(c)
+                podcast.main(epg[0])
 
 
 if __name__ == '__main__':
