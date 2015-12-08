@@ -15,6 +15,22 @@ ARD = 'p:ARD'
 ZDF = 'p:ZDFvision'
 
 
+def replacechars(path):
+
+    a = ['ä', 'ö', 'ü', 'Ä', 'Ö', 'Ü', 'ß', ' ']
+    b = ['ae', 'oe', 'ue', 'Ae', 'Oe', 'Ue', 'ss', '_']
+
+    i = 0
+    while i < len(a):
+        if a[i] in path:
+            path = path.replace(a[i], b[i])
+        i += 1
+
+    path = re.compile('[^a-zA-Z0-9_-]').sub('', path.lower())
+    
+    return path
+
+
 def get_host():
 
     with closing(MySQLdb.connect(
@@ -79,9 +95,8 @@ def parse_lamedb(lines, host):
                 url.append(''.join(url_string))
                 sid.append(service_id)
                 channel.append(
-                    (lines[i+1].decode('utf-8')).strip().replace('.', ''))
-                alias.append(
-                    re.compile('[^a-zA-Z0-9]').sub('', channel[f].lower()))
+                    (lines[i+1].strip().replace('.', '')))
+                alias.append(replacechars(channel[f]))
 
                 f += 1
         i += 1
@@ -104,7 +119,7 @@ def add_db_entries(channel, alias, sid, url):
                 cursor.execute(
                     'INSERT INTO lamedb (channel, alias, sid, url) \
                     VALUES (%s,%s,%s,%s)',
-                    ((channel[i]), (alias[i]), (sid[i]), (url[i]))
+                    ((channel[i].decode('utf-8')), (alias[i]), (sid[i]), (url[i]))
                     )
                 i += 1
             connection.commit()
