@@ -193,7 +193,7 @@ def main():
 
                 i = 0
                 while i < len(corresponding_files):
-##                    corresponding_files[i] = stamp(corresponding_files[i])
+                    corresponding_files[i] = stamp(corresponding_files[i])
                     extension = corresponding_files[i].rsplit('.', 1)[1]
                     if extension == 'ts':
                         audio_file = corresponding_files[i]
@@ -203,8 +203,8 @@ def main():
                 id3tag(out_file, timestamp, channel, epg)
                 database(timestamp, channel, epg, out_file)
 
-##                for c in corresponding_files:
-##                    os.remove(c)
+                for c in corresponding_files:
+                    os.remove(c)
                 podcast.main(epg[0])
 
 
