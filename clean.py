@@ -31,7 +31,7 @@ def delete_file_orphans(cursor):
     i = 0
 
     while i < len(mp3):
-        
+
         db_request = 'SELECT COUNT(*) FROM recordings WHERE audiofile = %s'
         cursor.execute(db_request, (mp3[i],))
         check = cursor.fetchone()[0]
@@ -56,7 +56,7 @@ def delete_db_orphans(connection, cursor):
         mp3 = os.path.join(
             PATH_RECORDINGS, channel_alias, title_path, db_record[6]
         )
-        
+
         check = os.path.isfile(mp3)
         if check is False:
             db_request = 'DELETE FROM recordings WHERE audiofile = %s'
@@ -73,21 +73,6 @@ def delete_empty_dirs():
                 os.rmdir(dirs[0])
         i += 1
 
-
-##                    os.rmdir(os.path.join(root, name))
-
-
-##        print dirs[0]
-##        print dirs[1]
-##        print os.listdir(dirs[0])
-##        print os.path.getsize(dirs[2])
-
-            
-        
-##            if files is None:
-##                print dirs[0]
-                
-##            fullpath.append(os.path.join(dirs[0], files))    
 
 def main():
 
