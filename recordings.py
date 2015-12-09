@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 
 import os
 import socket
@@ -18,7 +18,7 @@ from mutagen.id3 import ID3, TIT2, TPE1, TALB, USLT, TYER, APIC
 
 import login
 import podcast
-
+from lamedb import replacechars
 
 DIR_FROM = '/home/pi/dreamberry/recordings/finished/'
 DIR_TO = '/var/www/dreamberry/recordings/'
@@ -72,7 +72,7 @@ def epgdata(sid, timestamp):
 
 def transcode (audio_file, timestamp, epg):
 
-    title = re.compile('[^a-zA-Z0-9]').sub('', epg[1].lower())
+    title = replacechars(epg[1].decode('latin-1').encode('utf-8'))
     alias = epg[0]
     out_dir = os.path.join(DIR_TO, alias, title)
     if not os.path.exists(out_dir):
@@ -193,7 +193,7 @@ def main():
 
                 i = 0
                 while i < len(corresponding_files):
-                    corresponding_files[i] = stamp(corresponding_files[i])
+##                    corresponding_files[i] = stamp(corresponding_files[i])
                     extension = corresponding_files[i].rsplit('.', 1)[1]
                     if extension == 'ts':
                         audio_file = corresponding_files[i]
@@ -203,8 +203,8 @@ def main():
                 id3tag(out_file, timestamp, channel, epg)
                 database(timestamp, channel, epg, out_file)
 
-                for c in corresponding_files:
-                    os.remove(c)
+##                for c in corresponding_files:
+##                    os.remove(c)
                 podcast.main(epg[0])
 
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 
 import MySQLdb
 from contextlib import closing
@@ -12,6 +12,7 @@ import os
 import re
 
 import login
+from lamedb import replacechars
 
 
 HOST_NAME = 'http://' + socket.gethostname()
@@ -167,8 +168,6 @@ def main(channel_alias):
             login.DB_HOST, login.DB_USER,
             login.DB_PASSWORD, login.DB_DATABASE)) as connection:
 
-##        channel_alias = sys.argv[1]
-
         channel = station(connection, channel_alias)
         last_build_date = formatdate(time.time(), True)
         podcast_img = image(channel_alias)
@@ -196,8 +195,8 @@ def main(channel_alias):
                     + ' Uhr)'
                 )
                 description = db_record[5]
-                title_path = re.compile(
-                    '[^a-zA-Z0-9]').sub('', db_record[4].lower()
+                title_path = replacechars(
+                    db_record[4].decode('latin-1').encode('utf-8')
                 )
                 audio_file = (
                     channel_alias + '/' + title_path + '/' + db_record[6]
@@ -205,7 +204,7 @@ def main(channel_alias):
                 length_bytes = db_record[9]
                 guid = (
                     HOST_NAME
-                    + 'dreamberry/podcast/'
+                    + '/dreamberry/podcast/'
                     + channel_alias
                     + '_'
                     + str(db_record[0])
