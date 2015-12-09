@@ -20,6 +20,7 @@ import login
 import podcast
 from lamedb import replacechars
 
+
 DIR_FROM = '/home/pi/dreamberry/recordings/finished/'
 DIR_TO = '/var/www/dreamberry/recordings/'
 STAMP = 'processing_'
@@ -28,7 +29,6 @@ ID3_TIME_FORMAT = '%d.%m.%Y, %H:%M'
 PODCAST_PATH = '/var/www/dreamberry/podcast/'
 PODCAST_IMG_PATH = '/var/www/dreamberry/img/podcast/'
 HOST_NAME = 'http://' + socket.gethostname()
-
 
 
 def stamp(f):
