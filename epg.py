@@ -80,6 +80,7 @@ def add_to_db(connection, cursor,
         if not summary[i]:
             summary[i] = ''
         summary[i] = summary[i].replace(u'\x8a', u'\n')
+        summary[i] = summary[i].replace(u'\x26', u'und')
 
         cursor.execute('INSERT INTO epg \
         (alias, title, teaser, summary, time, duration) \
