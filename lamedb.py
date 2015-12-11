@@ -35,7 +35,7 @@ def get_host():
 
     with closing(MySQLdb.connect(
             login.DB_HOST, login.DB_USER,
-            login.DB_PASSWORD, login.DB_DATABASE)) as connection:
+            login.DB_PASSWORD, login.DB_DATABASE, charset='utf8')) as connection:
         with closing(connection.cursor()) as cursor:
             cursor.execute('SELECT host FROM enigma_host WHERE id="1"')
             host = cursor.fetchone()[0]
@@ -108,7 +108,7 @@ def add_db_entries(channel, alias, sid, url):
 
     with closing(MySQLdb.connect(
             login.DB_HOST, login.DB_USER,
-            login.DB_PASSWORD, login.DB_DATABASE)) as connection:
+            login.DB_PASSWORD, login.DB_DATABASE, charset='utf8')) as connection:
         with closing(connection.cursor()) as cursor:
 
             cursor.execute('TRUNCATE TABLE lamedb')

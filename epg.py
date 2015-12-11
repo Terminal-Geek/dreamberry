@@ -97,7 +97,7 @@ def main():
 
     with closing(MySQLdb.connect(
             login.DB_HOST, login.DB_USER,
-            login.DB_PASSWORD, login.DB_DATABASE)) as connection:
+            login.DB_PASSWORD, login.DB_DATABASE, charset='utf8')) as connection:
         with closing(connection.cursor()) as cursor:
 
             check_online(connection, cursor)
