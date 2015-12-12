@@ -15,6 +15,7 @@ from email.utils import formatdate
 
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, TIT2, TPE1, TALB, USLT, TYER, APIC
+from soco import SoCo
 
 import login
 import podcast
@@ -174,6 +175,19 @@ def database(timestamp, channel, epg, out_file):
             connection.commit()
 
 
+def sonos_library_update():
+
+    with closing(MySQLdb.connect(
+            login.DB_HOST, login.DB_USER,
+            login.DB_PASSWORD, login.DB_DATABASE)) as connection:
+        with closing(connection.cursor()) as cursor:
+            cursor.execute('SELECT ip FROM sonos WHERE id="1"')
+            ip = cursor.fetchone()[0]
+
+    sonos = SoCo(ip)
+    sonos.start_library_update()
+
+
 def main():
 
     for f in glob(DIR_FROM + '*'):
@@ -206,6 +220,7 @@ def main():
                 for c in corresponding_files:
                     os.remove(c)
                 podcast.main(epg[0])
+                sonos_library_update()
 
 
 if __name__ == '__main__':
