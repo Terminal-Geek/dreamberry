@@ -51,7 +51,7 @@ def header(channel, last_build_date, podcast_img):
                     '<rss xmlns:itunes=\"http://www.itunes.com/'
                     + 'dtds/podcast-1.0.dtd\" version=\"2.0\">',
                     '<channel>',
-                    '<title>Dreamberry - '
+                    '<title>DreamBerry - '
                     + channel
                     + '</title>',
                     '<link>'
@@ -139,7 +139,7 @@ def item(title, description, audio_file, length_bytes, guid,
                     + '</title>',
                     '<link>'
                     + HOST_NAME
-                    + 'dreamberry'
+                    + '/dreamberry'
                     + '</link>',
                     '</image>',
                     '<itunes:author>'
