@@ -146,6 +146,12 @@ def audiolength(out_file):
     return length, length_bytes
 
 
+def rights():
+
+    rights = ['chown', '-R', 'www-data:www-data', DIR_TO]
+    subprocess.call(rights)
+
+
 def database(timestamp, channel, epg, out_file):
 
     rec_date = datetime.datetime.fromtimestamp(
@@ -202,6 +208,7 @@ def main():
 
                 out_file = transcode(audio_file, timestamp, epg)
                 id3tag(out_file, timestamp, channel, epg)
+                rights()
                 database(timestamp, channel, epg, out_file)
 
                 for c in corresponding_files:
