@@ -1,0 +1,14 @@
+#!/bin/bash
+
+inotifywait -mrq -e delete --format %w%f /var/www/dreamberry/recordings | while read FILE
+do
+    date >> /home/pi/dreamberry/del.log
+    echo $FILE >> /home/pi/dreamberry/del.log
+    if echo $FILE | grep ".mp3" > /dev/null
+        then
+        /home/pi/dreamberry/clean.py
+        /home/pi/dreamberry/sonos.py
+        IFS="/" read -a path <<< $FILE
+        /home/pi/dreamberry/podcast.py ${path[5]}
+    fi
+done
