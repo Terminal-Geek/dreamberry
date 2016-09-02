@@ -13,8 +13,9 @@ from lamedb import replacechars
 
 RECORDING_PATH = '/var/www/dreamberry/recordings/'
 BACKUP_PATH = '/media/fritzbox/Radio/'
+PROWL_API_KEY = 'c855906554c47633852dcc4e1cb8b7427e11d10f'
 MAX_USAGE = 90
-RELAX_USAGE = 85
+RELAX_USAGE = 80
 
 
 def checkspace():
@@ -24,6 +25,20 @@ def checkspace():
     used = int(used[len(used)-4:len(used)-2])
 
     return used
+
+
+def prowl(usage):
+
+    description = 'Speicherauslastung%20bei%20' + str(usage) + '%'
+    url = (
+            'https://api.prowlapp.com/publicapi/add/'
+            + '?apikey='
+            + PROWL_API_KEY
+            + '&application=Dreamberry&description='
+            + description
+        )
+
+    call (['curl', '-s', '-o', 'curl.log', url])
 
 
 def movelatest():
@@ -54,10 +69,12 @@ def movelatest():
 
 def main():
 
-    if checkspace() >= MAX_USAGE:
+    usage = checkspace()
 
+    prowl(usage)
+
+    if usage >= MAX_USAGE:
         call('kill $(pidof -x watchdog)', shell=True)
-
         while 1:
             movelatest()
             if checkspace() <= RELAX_USAGE:
