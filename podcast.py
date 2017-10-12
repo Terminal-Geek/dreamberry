@@ -16,7 +16,6 @@ from lamedb import replacechars
 
 
 HOST_NAME = 'http://dreamberry.lan'
-# HOST_NAME = 'http://' + socket.gethostname()
 PODCAST_IMG_PATH = '/var/www/dreamberry/img/podcast/'
 PODCAST_PATH = '/var/www/dreamberry/podcast/'
 ID3_TIME_FORMAT = '%d.%m.%Y, %H:%M'
@@ -39,10 +38,8 @@ def image(channel_alias):
     podcast_img = PODCAST_IMG_PATH + channel_alias + '.jpg'
     if not os.path.isfile(podcast_img):
         podcast_img = HOST_NAME + '/img/podcast/' + 'default.jpg'
-#        podcast_img = HOST_NAME + '/dreamberry/img/podcast/' + 'default.jpg'
     else:
         podcast_img = HOST_NAME + '/img/podcast/' + channel_alias + '.jpg'
-#        podcast_img = HOST_NAME + '/dreamberry/img/podcast/' + channel_alias + '.jpg'
 
     return podcast_img
 
@@ -59,7 +56,6 @@ def header(channel, last_build_date, podcast_img):
                     + '</title>',
                     '<link>'
                     + HOST_NAME
-#                    + '/dreamberry'
                     + '</link>',
                     '<description>Hier hörst du alle deine Aufnahmen von '
                     + channel
@@ -115,7 +111,6 @@ def item(title, description, audio_file, length_bytes, guid,
                     '<link>'
                     + HOST_NAME
                     + '/recordings/'
-#                    + '/dreamberry/recordings/'
                     + audio_file
                     + '</link>',
                     '<description>',
@@ -124,7 +119,6 @@ def item(title, description, audio_file, length_bytes, guid,
                     '<enclosure url=\"'
                     + HOST_NAME
                     + '/recordings/'
-#                    + '/dreamberry/recordings/'
                     + audio_file
                     + '\" length=\"'
                     + str(length_bytes)
@@ -144,7 +138,6 @@ def item(title, description, audio_file, length_bytes, guid,
                     + '</title>',
                     '<link>'
                     + HOST_NAME
-#                    + '/dreamberry'
                     + '</link>',
                     '</image>',
                     '<itunes:author>'
@@ -210,7 +203,6 @@ def main(channel_alias):
                 guid = (
                     HOST_NAME
                     + '/podcast/'
-#                    + '/dreamberry/podcast/'
                     + channel_alias
                     + '_'
                     + str(db_record[0])

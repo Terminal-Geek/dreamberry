@@ -18,6 +18,7 @@ from mutagen.id3 import ID3, TIT2, TPE1, TALB, USLT, TYER, APIC
 
 import login
 import podcast
+import epg
 from lamedb import replacechars
 from sonos import main as sonos
 
@@ -92,6 +93,7 @@ def transcode (audio_file, timestamp, epg):
         '-ab',
         '256k',
         out_file,
+        '-y',
     ]
     subprocess.call(avconv)
 

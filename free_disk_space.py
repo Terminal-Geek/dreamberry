@@ -14,8 +14,8 @@ from lamedb import replacechars
 RECORDING_PATH = '/var/www/dreamberry/recordings/'
 BACKUP_PATH = '/media/fritzbox/Radio/'
 PROWL_API_KEY = 'c855906554c47633852dcc4e1cb8b7427e11d10f'
-MAX_USAGE = 90
-RELAX_USAGE = 80
+MAX_USAGE = 85
+RELAX_USAGE = 65
 
 
 def checkspace():

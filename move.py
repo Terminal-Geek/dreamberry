@@ -17,7 +17,7 @@ def main():
 
     now = int(time.time())
     for f in glob(DIR_FROM+'*.*'):
-        if mtime(f)+60 < now:
+        if mtime(f)+180 < now:
             os.rename(DIR_FROM + os.path.basename(f),
                       DIR_TO + os.path.basename(f))
 
